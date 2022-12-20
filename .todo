@@ -1,0 +1,11 @@
+FEATURES
+
+- Database Schema
+- JWT login route
+- OAUTH route (using JWT to authenticate user's)
+- Logic to estimate distance between two store's
+
+ENTITIES
+
+- Stores
+- Users

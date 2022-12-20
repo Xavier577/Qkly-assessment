@@ -1,0 +1,1 @@
+export const HASHER_MODULE_OPTIONS = Symbol('HASHER_MODULE_OPTIONS');

@@ -1,44 +1,25 @@
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import {
-  DocumentBuilder,
-  OpenAPIObject,
-  SwaggerCustomOptions,
-  SwaggerDocumentOptions,
-  SwaggerModule,
-} from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import swaggerInit from './swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('Qkly Assessment challenge')
-    .setDescription('An api for Qkly onboarding challenge')
-    .setVersion('1.0')
-    .addTag('cats')
-    .build();
+  const logger = new Logger('NEST_APPLICATION');
 
-  const customOptions: SwaggerCustomOptions = {
-    useGlobalPrefix: false,
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-    customSiteTitle: 'Qkly Assement API',
-  };
+  swaggerInit(app);
 
-  const swaggerDocumentOptions: SwaggerDocumentOptions = {
-    operationIdFactory: (_controllerKey, methodKey) => methodKey,
-    include: [],
-  };
+  const configService = app.get(ConfigService);
 
-  const document = SwaggerModule.createDocument(
-    app,
-    config,
-    swaggerDocumentOptions,
-  );
+  const PORT = configService.get('PORT');
 
-  SwaggerModule.setup('/api/docs', app, document, customOptions);
+  await app.listen(PORT);
 
-  await app.listen(3000);
+  const appUrl = await app.getUrl();
+
+  logger.log(`listening on ${appUrl}`);
 }
+
 bootstrap();
